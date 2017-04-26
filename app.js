@@ -85,26 +85,13 @@ function isLoggedIn(req, res, next){
     if(req.isAuthenticated()){
         return next();
     }
-    res.redirect("/login.ejs");
+    res.redirect("/login");
 }
 
-app.get("/dashboard", function(req, res){
+app.get("/dashboard", isLoggedIn, function(req, res){
     console.log(req.user);
     res.render("dashboard.ejs", {currentUser: req.user});
 });
-
-// app.get("/hello/:thing", function(req, res){
-//     var thing = req.params.thing
-//     res.render("page1.ejs", {thingVar: thing})
-// })
-
-
-// //need npm install body-parser plus code at the top
-// app.post("/add", function(req,res){
-//     console.log(req.body);
-//     res.redirect("/hello/redirected")
-// });
-
 
 //404 catch-all, MUST be after all other routes
 app.get("*", function(req,res){
