@@ -1,5 +1,15 @@
 <% include partials/header %>
 
     <h1>Dashboard</h1>
-
+    <p>Funds: <%=currentUser.funds%></p>
+    
+    <ul>
+        <% currentUser.properties.forEach(function(property){ %>
+        <li><%= property %></li>
+        <% }); %>
+    </ul>
+    
+    <form action="/buy" method="POST">
+        <button>Buy Property</button>
+    </form>
 <% include partials/footer %>
