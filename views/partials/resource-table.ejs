@@ -1,0 +1,16 @@
+<table class="table table-hover table-bordered" id="resources-table">
+        <tr>
+            <th>Resource</th>
+            <th>Quantity</th>
+            <th>Rate</th>
+        </tr>
+        
+            <% for (var resource in resource_list){%>
+                <tr>
+                    <td><%= resource %></td>
+                    <td><%= resource_list[resource].quantity %></td>
+                    <td><%= resource_list[resource].rate %></td>
+                </tr>
+            <% }; %>
+        
+    </table>

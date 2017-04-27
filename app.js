@@ -1,5 +1,4 @@
 var express                 = require("express"),
-    app                     = express(),
     bodyParser              = require("body-parser"),
     mongoose                = require("mongoose"),
     passport                = require("passport"),
@@ -9,6 +8,8 @@ var express                 = require("express"),
     expressSession          = require("express-session"),
     seedDB                  = require("./seeds");
     
+var app = express();
+
 var allRoutes = require("./routes/index");
     
 //seedDB();

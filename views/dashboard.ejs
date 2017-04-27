@@ -1,20 +1,57 @@
 <% include partials/header %>
 
     <h1>Dashboard</h1>
-    <p>Funds: <%=currentUser.funds%></p>
+    <p>Cash: $<span id="cash"><%=currentUser.funds%></span></p>
     
-    <ul>
+    <div class="row">
+        <h3>Resources</h3>
+    </div>
+    <!--for each type of resource owned-->
+    <!--show amount we own, which we need to find by going through all our properties and adding up their stock, and saving it according to resource-->
+    <span id="resources-table">
+    <table class="table table-hover table-bordered">
+        <tr>
+            <th>Resource</th>
+            <th>Quantity</th>
+            <th>Rate</th>
+        </tr>
+        
+            <% for (var resource in resource_list){%>
+                <tr>
+                    <td><%= resource %></td>
+                    <td><%= resource_list[resource].quantity %></td>
+                    <td><%= resource_list[resource].rate %></td>
+                </tr>
+            <% }; %>
+        
+    </table>
+    </span>
+    
+    <div class="row">
+        <h3>
+            <span>Properties</span>
+            <button type="button" class="btn btn-primary buy-property" data-toggle="modal" data-target="#exampleModal">+</button>
+        </h3>
+    </div>
+    
+    <!--PROPERTIES TABLE-->
+    <table class="table table-hover table-bordered">
+        <tr>
+            <th>Name/ID</th>
+            <th>Cost</th>
+            <th>Revenue</th>
+        </tr>
         <% for(var i=0; i<currentUser.properties.length; i++) {%>
-            <li><%= currentUser.properties[i]._id %></li>
-            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" data-whatever=<%= currentUser.properties[i]._id %>>Open modal for <%= currentUser.properties[i]._id %></button>
+            <tr>
+                <td><%= currentUser.properties[i].name %></td>
+                <td><%= currentUser.properties[i].cost %></td>
+                <td><%= currentUser.properties[i].revenue %></td>
+                <td><button type="button" class="btn btn-primary property-button" data-toggle="modal" data-target="#exampleModal" data-whatever=<%= currentUser.properties[i]._id %>>Manage</button></td>
+            </tr>
         <% } %>
-    </ul>
+    </table>
     
-    <form action="/buy" method="POST">
-        <button>Buy Property</button>
-    </form>
-    
-    
+    <!--MODAL-->
     <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
       <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
@@ -34,16 +71,37 @@
     </div>
     
     <script type="text/javascript">
+        //$('.property-button').on('click', function(event) {
         $('#exampleModal').on('show.bs.modal', function (event) {
             var button = $(event.relatedTarget) // Button that triggered the modal
-            var id = button.data('whatever') // Extract info from data-* attributes
-            // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
-            // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
-            var modal = $(this)
-            modal.find('.modal-title').text('New message to ' + id)
-            //modal.find('.modal-body').html() //put in include here? fill body with whatever
-            modal.find('.modal-body').load("ajax/" + id);
-        })
+            
+            if (button.hasClass('property-button')) {
+                var id = button.data('whatever') // Extract info from data-* attributes
+                // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+                // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+                var modal = $(this)
+                modal.find('.modal-title').text('New message to ' + id)
+                //modal.find('.modal-body').html() //put in include here? fill body with whatever
+                
+                //get updated info on this property
+                modal.find('.modal-body').load("/ajax/" + id);
+                
+                //also update resources table
+                //$('#resources-table').replaceWith($.load("/ajax/resources-table"));
+                
+                $.get("/ajax/resources-table", function(data) {
+                    $("#resources-table").replaceWith(data);
+                });
+                
+            } else if (button.hasClass('buy-property')) {
+                //fill modal with properties to buy
+                var modal = $(this)
+                modal.find('.modal-title').text('Buy Menu');
+                modal.find('.modal-body').load("/buy");
+            }
+            
+
+        });
     </script>
     
 <% include partials/footer %>

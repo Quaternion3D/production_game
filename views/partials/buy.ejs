@@ -1,0 +1,18 @@
+<!--loop through all available types of property to buy-->
+<!--later may be represented by map rather than list-->
+
+<form action="/buy" method="POST">
+    <div class="form-group">
+        <label for="property-name">Name</label>
+        <input type="text" name="name" class="form-control" id="property-name" placeholder="Name">
+    </div>
+    <div class="form-group">
+        <label for="cost">Cost</label>
+        <input type="number" name="cost" class="form-control" id="cost" value="50">
+    </div>
+    <div class="form-group">
+        <label for="revenue">Revenue</label>
+        <input type="number" name="revenue" class="form-control" id="revenue" value="75">
+    </div>
+    <button type="submit" class="btn btn-primary">Buy</button>
+</form>
