@@ -4,11 +4,8 @@ var express                 = require("express"),
     mongoose                = require("mongoose"),
     passport                = require("passport"),
     User                    = require("./models/user"),
-    Post                    = require("./models/post"),
-    Property                = require("./models/property"),
-    MineProperty            = require("./models/mine"),
     LocalStrategy           = require("passport-local"),
-    passportLocalMongoos    = require("passport-local-mongoose"),
+    passportLocalMongoose    = require("passport-local-mongoose"),
     expressSession          = require("express-session"),
     seedDB                  = require("./seeds");
     

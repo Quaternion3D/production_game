@@ -6,10 +6,10 @@ var User                    = require("../models/user"),
     MineProperty            = require("../models/mine"),
     passport                = require("passport");
 
-//////////////ROUTES\\\\\\\\\\\\\\\
+
+////////// INDEX / LOGIN / SIGNUP ROUTES \\\\\\\\\\\
 
 router.get("/", function(req, res){
-    console.log(req.user);
     res.render("index.ejs", {currentUser: req.user});
 });
 
@@ -56,8 +56,18 @@ function isLoggedIn(req, res, next){
     res.redirect("/login");
 }
 
+
+
+////////////USER ROUTES\\\\\\\\\\\\\\\
+
 router.get("/dashboard", isLoggedIn, function(req, res){
-    res.render("dashboard.ejs", {currentUser: req.user});
+    User.findOne({username: req.user.username}).populate("properties").exec(function(err,user){
+        if(err){
+            console.log(err);
+        } else {
+            res.render("dashboard.ejs", {currentUser: user});
+        }
+    })
 });
 
 router.post("/buy", isLoggedIn, function(req, res){
@@ -74,6 +84,21 @@ router.post("/buy", isLoggedIn, function(req, res){
                     res.redirect("/dashboard");
                 }
             });
+        }
+    });
+})
+
+////////////////AJAX ROUTES\\\\\\\\\\\\\\\\\\
+router.get("/ajax/:id", isLoggedIn, function(req, res){
+    //assuming ID is a property (not user or other model in another collection)
+    Property.findOne({_id: req.params.id}, function(err,property_data){
+        if(err){
+            //if nothing found will it err?
+            console.log(err);
+            //redirect?
+        } else {
+            //check that it belongs to req.user
+            res.render("modal.ejs", {property: property_data});
         }
     });
 })
