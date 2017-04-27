@@ -1,5 +1,16 @@
 <% include partials/header %>
 
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        var socket = io.connect();
+        socket.on('update', function(){
+            //means all properties updated, we should get the new data for our resource table
+            $.get("/ajax/resources-table", function(data) {
+                    $("#resources-table").replaceWith(data);
+                });
+        });
+    </script>
+
     <h1>Dashboard</h1>
     <p>Cash: $<span id="cash"><%=currentUser.funds%></span></p>
     
@@ -8,8 +19,7 @@
     </div>
     <!--for each type of resource owned-->
     <!--show amount we own, which we need to find by going through all our properties and adding up their stock, and saving it according to resource-->
-    <span id="resources-table">
-    <table class="table table-hover table-bordered">
+    <table class="table table-hover table-bordered" id="resources-table">
         <tr>
             <th>Resource</th>
             <th>Quantity</th>
@@ -25,7 +35,6 @@
             <% }; %>
         
     </table>
-    </span>
     
     <div class="row">
         <h3>
@@ -99,8 +108,6 @@
                 modal.find('.modal-title').text('Buy Menu');
                 modal.find('.modal-body').load("/buy");
             }
-            
-
         });
     </script>
     

@@ -122,7 +122,6 @@ router.post("/buy", isLoggedIn, function(req, res){
 ////////////////AJAX ROUTES\\\\\\\\\\\\\\\\\\
 router.get("/ajax/resources-table", isLoggedIn, function(req, res){
     //sum up the resources again and render the table from ejs
-    console.log("/ajax/resources-table");
     User.findOne({username: req.user.username}).populate("properties").exec(function(err,user){
         if(err){
             console.log(err);
@@ -136,7 +135,7 @@ router.get("/ajax/resources-table", isLoggedIn, function(req, res){
 router.get("/ajax/:id", isLoggedIn, function(req, res){
     //assuming ID is a property (not user or other model in another collection)
     //is it bad if we're updating the DB on a get? is that a thing?
-    Property.findOneAndUpdate({_id: req.params.id}, {}, function(err,property_data){
+    Property.findOne({_id: req.params.id}, function(err,property_data){
         if(err){
             //if nothing found will it err?
             console.log(err);
@@ -145,21 +144,27 @@ router.get("/ajax/:id", isLoggedIn, function(req, res){
             //TODO:check that it belongs to req.user
             //find difference between updatedAt and now
             //multiply with revenue and add to funds
-            var now = new Date();
-            var diff = now - property_data.updatedAt; //in ms
+            //var now = new Date();
+            //var diff = now - property_data.updatedAt; //in ms
             //for this property, increase inventory (up to capacity) by diff * production_rate
-            property_data.inventory_count += (diff / 1000) * property_data.production_rate;
-            property_data.save(function(err, data){
-                if(err){
-                    console.log(err);
-                } else {
-                    res.render("modal.ejs", {property: property_data});
-                }
-            });
-            
+            // property_data.inventory_count += (diff / 1000) * property_data.production_rate;
+            // property_data.save(function(err, data){
+            //     if(err){
+            //         console.log(err);
+            //     } else {
+            //         res.render("modal.ejs", {property: property_data});
+            //     }
+            // });
+            res.render("modal.ejs", {property: property_data});
         }
     });
 });
+
+//update function
+//goes through all properties, calculates time difference, and updates their inventory
+
+
+
 
 //404 catch-all, MUST be after all other routes
 router.get("*", function(req,res){

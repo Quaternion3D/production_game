@@ -3,12 +3,17 @@ var express                 = require("express"),
     mongoose                = require("mongoose"),
     passport                = require("passport"),
     User                    = require("./models/user"),
+    Property                = require("./models/property"),
     LocalStrategy           = require("passport-local"),
-    passportLocalMongoose    = require("passport-local-mongoose"),
+    passportLocalMongoose   = require("passport-local-mongoose"),
     expressSession          = require("express-session"),
     seedDB                  = require("./seeds");
     
 var app = express();
+
+//socket.io setup
+var server = require("http").Server(app);
+var io = require("socket.io")(server);
 
 var allRoutes = require("./routes/index");
     
@@ -41,14 +46,53 @@ app.use(function(req, res, next){
 })
 
 
-app.use(allRoutes);
+app.use(allRoutes); 
 
 
+io.on('connection', function (socket) {
+    console.log("user connected");
+    socket.emit('news', { hello: 'world' });
+    socket.on('join', function(data) {
+        console.log(data);
+        socket.emit('messages','Hello from server');
+    });
+    socket.on('my other event', function (data) {
+        console.log(data);
+    });
+    var intervalID = setInterval(function(){
+        socket.emit('update')
+    }, 5000);
+});
+
+
+function update_all_properties(){
+    //only reason it's update instead of find is to update the updatedAt value
+    Property.find({},function(err,all_properties){
+        if(err){
+            console.log(err);
+        } else {
+            all_properties.forEach(function(property_data) {
+                var now = new Date();
+                var diff = now - property_data.updatedAt; //in ms
+                property_data.inventory_count += Math.round((diff / 1000) * property_data.production_rate);
+                property_data.save(function(err, data){
+                    if(err){
+                        console.log(err);
+                    } else {
+                        
+                    }
+                });
+            });
+        }
+    });
+}
+
+var intervalID = setInterval(update_all_properties,5000)
 
 
 
 
 //tell express to listen for requests (start server)
-app.listen(process.env.PORT, process.env.IP, function(){
+server.listen(process.env.PORT, process.env.IP, function(){
     console.log("Server started");
 });
