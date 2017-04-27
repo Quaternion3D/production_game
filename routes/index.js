@@ -97,12 +97,21 @@ router.get("/buy", isLoggedIn, function(req, res){
 router.post("/buy", isLoggedIn, function(req, res){
     //todo: specify what kind of property to buy
     //also ask "are you sure?"
-    if (req.user.funds >= req.body.cost){
-        MineProperty.create({name: req.body.name, cost: req.body.cost, revenue: req.body.revenue}, function(err,mine_data){
+    if (req.user.funds >= req.body.build_cost){
+        MineProperty.create(
+            {
+                name:                   req.body.name, 
+                resource_type:          req.body.resource_type,
+                build_cost:             req.body.build_cost, 
+                run_cost:               req.body.run_cost, 
+                production_rate:        req.body.production_rate,
+                storage_capacity:       req.body.storage_capacity,
+                inventory_count:        req.body.inventory_count,
+            }, function(err,mine_data){
             if(err){
                 console.log(err);
             } else {
-                req.user.funds = req.user.funds - req.body.cost;
+                req.user.funds = req.user.funds - req.body.build_cost;
                 req.user.properties.push(mine_data);
                 req.user.save(function(err, data){
                     if(err){
@@ -115,6 +124,7 @@ router.post("/buy", isLoggedIn, function(req, res){
         });
     } else {
         console.log("insufficient funds");
+        //TODO: output this error to the user
         res.redirect("/dashboard");
     }
 })

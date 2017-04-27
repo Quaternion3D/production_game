@@ -5,8 +5,9 @@
         var socket = io.connect();
         socket.on('update', function(){
             //means all properties updated, we should get the new data for our resource table
+            //if modal is open, update that info too???
             $.get("/ajax/resources-table", function(data) {
-                    $("#resources-table").replaceWith(data);
+                    $("#resources-table").replaceWith(data); //TODO: would be super cool to have the numbers animate here (count up incrementally or something)
                 });
         });
     </script>
@@ -17,25 +18,29 @@
     <div class="row">
         <h3>Resources</h3>
     </div>
-    <!--for each type of resource owned-->
-    <!--show amount we own, which we need to find by going through all our properties and adding up their stock, and saving it according to resource-->
-    <table class="table table-hover table-bordered" id="resources-table">
-        <tr>
-            <th>Resource</th>
-            <th>Quantity</th>
-            <th>Rate</th>
-        </tr>
-        
-            <% for (var resource in resource_list){%>
-                <tr>
-                    <td><%= resource %></td>
-                    <td><%= resource_list[resource].quantity %></td>
-                    <td><%= resource_list[resource].rate %></td>
-                </tr>
-            <% }; %>
-        
-    </table>
     
+    <div class="row">
+        <div class="col-md-4">
+            <!--for each type of resource owned-->
+            <!--show amount we own, which we need to find by going through all our properties and adding up their stock, and saving it according to resource-->
+            <table class="table table-hover table-bordered" id="resources-table">
+                <tr>
+                    <th>Resource</th>
+                    <th>Quantity</th>
+                    <th>Rate (/sec)</th>
+                </tr>
+                
+                    <% for (var resource in resource_list){%>
+                        <tr>
+                            <td><%= resource %></td>
+                            <td><%= resource_list[resource].quantity %></td>
+                            <td><%= resource_list[resource].rate %></td>
+                        </tr>
+                    <% }; %>
+            </table>
+        </div>
+    </div>
+        
     <div class="row">
         <h3>
             <span>Properties</span>
@@ -46,15 +51,20 @@
     <!--PROPERTIES TABLE-->
     <table class="table table-hover table-bordered">
         <tr>
-            <th>Name/ID</th>
-            <th>Cost</th>
-            <th>Revenue</th>
+            <th>Name</th>
+            <th>Resource</th>
+            <th>Running Cost</th>
+            <th>Production Rate</th>
+            <th>Inventory</th>
+            <th>Details</th>
         </tr>
         <% for(var i=0; i<currentUser.properties.length; i++) {%>
             <tr>
                 <td><%= currentUser.properties[i].name %></td>
-                <td><%= currentUser.properties[i].cost %></td>
-                <td><%= currentUser.properties[i].revenue %></td>
+                <td><%= currentUser.properties[i].resource_type %></td>
+                <td><%= currentUser.properties[i].run_cost %></td>
+                <td><%= currentUser.properties[i].production_rate %></td>
+                <td><%= currentUser.properties[i].inventory_count %>/<%= currentUser.properties[i].storage_capacity %></td>
                 <td><button type="button" class="btn btn-primary property-button" data-toggle="modal" data-target="#exampleModal" data-whatever=<%= currentUser.properties[i]._id %>>Manage</button></td>
             </tr>
         <% } %>
@@ -94,13 +104,6 @@
                 
                 //get updated info on this property
                 modal.find('.modal-body').load("/ajax/" + id);
-                
-                //also update resources table
-                //$('#resources-table').replaceWith($.load("/ajax/resources-table"));
-                
-                $.get("/ajax/resources-table", function(data) {
-                    $("#resources-table").replaceWith(data);
-                });
                 
             } else if (button.hasClass('buy-property')) {
                 //fill modal with properties to buy

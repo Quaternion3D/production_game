@@ -7,12 +7,35 @@
         <input type="text" name="name" class="form-control" id="property-name" placeholder="Name">
     </div>
     <div class="form-group">
-        <label for="cost">Cost</label>
-        <input type="number" name="cost" class="form-control" id="cost" value="50">
+        <label for="resource_type">Resource</label>
+        <select class="form-control" name="resource_type" id="resource_type">
+            <option>Ore</option>
+            <option>Wood</option>
+            <option>Wheat</option>
+            <option>Oil</option>
+            <option>Iron</option>
+        </select>
     </div>
     <div class="form-group">
-        <label for="revenue">Revenue</label>
-        <input type="number" name="revenue" class="form-control" id="revenue" value="75">
+        <label for="build_cost">Build Cost</label>
+        <input type="number" name="build_cost" class="form-control" id="build_cost" value="50">
+    </div>
+    <div class="form-group">
+        <label for="run_cost">Running Cost</label>
+        <input type="number" name="run_cost" class="form-control" id="run_cost" value="75">
+    </div>
+    <div class="form-group">
+        <label for="production_rate">Production Rate</label>
+        <input type="number" name="production_rate" class="form-control" id="production_rate" value="75">
+    </div>
+    <div class="form-group">
+        <label for="storage_capacity">Storage Capacity</label>
+        <input type="number" name="storage_capacity" class="form-control" id="storage_capacity" value="75">
+    </div>
+    <div class="form-group">
+        <label for="inventory_count">Inventory</label>
+        <input type="number" name="inventory_count" class="form-control" id="inventory_count" value="75">
     </div>
     <button type="submit" class="btn btn-primary">Buy</button>
 </form>
+

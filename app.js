@@ -64,7 +64,7 @@ io.on('connection', function (socket) {
     }, 5000);
 });
 
-
+//also need to subtract all running properties' run costs from our funds
 function update_all_properties(){
     //only reason it's update instead of find is to update the updatedAt value
     Property.find({},function(err,all_properties){
@@ -73,8 +73,9 @@ function update_all_properties(){
         } else {
             all_properties.forEach(function(property_data) {
                 var now = new Date();
-                var diff = now - property_data.updatedAt; //in ms
-                property_data.inventory_count += Math.round((diff / 1000) * property_data.production_rate);
+                var diff = (now - property_data.updatedAt) / 1000; //in s
+                property_data.inventory_count = Math.min(property_data.storage_capacity, Math.round(property_data.inventory_count + diff * property_data.production_rate));
+                //future things here: once inventory is full change status of property to "inactive", send notification
                 property_data.save(function(err, data){
                     if(err){
                         console.log(err);
