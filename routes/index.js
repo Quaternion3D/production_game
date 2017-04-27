@@ -142,6 +142,17 @@ router.get("/ajax/resources-table", isLoggedIn, function(req, res){
     });
 });
 
+router.get("/ajax/properties-table", isLoggedIn, function(req, res){
+    User.findOne({username: req.user.username}).populate("properties").exec(function(err,user){
+        if(err){
+            console.log(err);
+        } else {
+            res.render("partials/property-table.ejs", {currentUser:user});
+        }
+    });
+});
+
+//TODO:check that it belongs to req.user
 router.get("/ajax/:id", isLoggedIn, function(req, res){
     //assuming ID is a property (not user or other model in another collection)
     //is it bad if we're updating the DB on a get? is that a thing?
@@ -151,24 +162,59 @@ router.get("/ajax/:id", isLoggedIn, function(req, res){
             console.log(err);
             //redirect?
         } else {
-            //TODO:check that it belongs to req.user
-            //find difference between updatedAt and now
-            //multiply with revenue and add to funds
-            //var now = new Date();
-            //var diff = now - property_data.updatedAt; //in ms
-            //for this property, increase inventory (up to capacity) by diff * production_rate
-            // property_data.inventory_count += (diff / 1000) * property_data.production_rate;
-            // property_data.save(function(err, data){
-            //     if(err){
-            //         console.log(err);
-            //     } else {
-            //         res.render("modal.ejs", {property: property_data});
-            //     }
-            // });
-            res.render("modal.ejs", {property: property_data});
+            res.render("modal.ejs", {property: property_data}, function(err, html) 
+            {
+                res.send(html);
+            });
         }
     });
 });
+
+router.post("/ajax/:id/:cmd", isLoggedIn, function(req, res){
+    console.log("here" + req.params.id + req.params.cmd)
+    Property.findOne({_id: req.params.id}, function(err,property_data){
+        if(err){
+            console.log(err);
+        } else {
+            if (req.params.cmd == "hire"){
+                property_data.num_employees += 1;
+                //TODO: set a limit on how many employees you can have
+                property_data.production_rate += 1;
+                //TODO: maybe something more complex here, like a ratio of employees to production rate
+                property_data.run_cost += 1;
+            } else if (req.params.cmd == "fire"){
+                if (property_data.num_employees > 0) {
+                    property_data.num_employees -= 1;
+                } else {
+                    property_data.num_employees = 0;
+                }
+                if (property_data.production_rate > 0) {
+                    property_data.production_rate -= 1;
+                } else {
+                    property_data.production_rate = 0;
+                }
+                if (property_data.run_cost > 0) {
+                    property_data.run_cost -= 1;
+                } else {
+                    property_data.run_cost = 0;
+                }
+            }
+            
+            console.log("saving");
+            
+            //when we update, we probably lose some production here (since updatedAt is incremented)
+            //but that kinda makes sense because you're in a staff transition period
+            //also it's only losing < 5 units
+            property_data.save(function(err, data){
+                if(err){
+                    console.log(err);
+                } else {
+                    res.send({property:property_data}); //send updated property back
+                }
+            });
+        }
+    });
+})
 
 //update function
 //goes through all properties, calculates time difference, and updates their inventory

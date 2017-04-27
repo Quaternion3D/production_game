@@ -9,6 +9,9 @@
             $.get("/ajax/resources-table", function(data) {
                     $("#resources-table").replaceWith(data); //TODO: would be super cool to have the numbers animate here (count up incrementally or something)
                 });
+            $.get("/ajax/properties-table", function(data) {
+                    $("#properties-table").replaceWith(data);
+                });
         });
     </script>
 
@@ -49,7 +52,7 @@
     </div>
     
     <!--PROPERTIES TABLE-->
-    <table class="table table-hover table-bordered">
+    <table class="table table-hover table-bordered" id="properties-table">
         <tr>
             <th>Name</th>
             <th>Resource</th>
@@ -89,25 +92,30 @@
       </div>
     </div>
     
+    <!--add so that when you exit from modal it updates table info-->
+    <!--or properties tab also updates every 5 sec-->
+    
     <script type="text/javascript">
         //$('.property-button').on('click', function(event) {
         $('#exampleModal').on('show.bs.modal', function (event) {
             var button = $(event.relatedTarget) // Button that triggered the modal
+            var modal = $(this)
             
             if (button.hasClass('property-button')) {
                 var id = button.data('whatever') // Extract info from data-* attributes
                 // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
                 // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
-                var modal = $(this)
-                modal.find('.modal-title').text('New message to ' + id)
-                //modal.find('.modal-body').html() //put in include here? fill body with whatever
+                
+                modal.find('.modal-title').text('Manage Property')
                 
                 //get updated info on this property
-                modal.find('.modal-body').load("/ajax/" + id);
+                $.get("/ajax/" + id, function(data){
+                    modal.find('.modal-body').html(data)
+                })
+                // modal.find('.modal-body').load("/ajax/" + id);
                 
             } else if (button.hasClass('buy-property')) {
                 //fill modal with properties to buy
-                var modal = $(this)
                 modal.find('.modal-title').text('Buy Menu');
                 modal.find('.modal-body').load("/buy");
             }

@@ -3,18 +3,18 @@ var mongoose    = require("mongoose"),
     Property    = require("./models/property"),
     MineProperty = require("./models/mine");
 
-mongoose.connect("mongodb://localhost/test");
+// mongoose.connect("mongodb://localhost/test");
 
-var userSchema = new mongoose.Schema({
-    name: String,
-    properties: [
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "Property"
-        }    
-    ]
-})
-var User = mongoose.model("User", userSchema);
+// var userSchema = new mongoose.Schema({
+//     name: String,
+//     properties: [
+//         {
+//             type: mongoose.Schema.Types.ObjectId,
+//             ref: "Property"
+//         }    
+//     ]
+// })
+// var User = mongoose.model("User", userSchema);
 
 // User.create({
 //     name: "henry"
@@ -66,29 +66,29 @@ var User = mongoose.model("User", userSchema);
 //     });
 // });
 
-Property.findOne({}, function(err,property){
-    if(err){
-        console.log(err);
-    } else {
-        console.log(property)
-        User.findOne({name: "henry"}, function(err, foundUser){
-            if(err){
-                console.log(err);
-            } else {
-                foundUser.properties.push(property);
-                foundUser.save(function(err, data){
-                    if(err){
-                        console.log(err);
-                    } else {
-                        console.log(data);
-                    }
-                });
-                console.log(foundUser);
-            }
-        });
-    }
+// Property.findOne({}, function(err,property){
+//     if(err){
+//         console.log(err);
+//     } else {
+//         console.log(property)
+//         User.findOne({name: "henry"}, function(err, foundUser){
+//             if(err){
+//                 console.log(err);
+//             } else {
+//                 foundUser.properties.push(property);
+//                 foundUser.save(function(err, data){
+//                     if(err){
+//                         console.log(err);
+//                     } else {
+//                         console.log(data);
+//                     }
+//                 });
+//                 console.log(foundUser);
+//             }
+//         });
+//     }
     
-});
+// });
 
 
 

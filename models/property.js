@@ -12,8 +12,9 @@ var PropertySchema = new mongoose.Schema(
         production_rate:    {type: Number, default:1},
         storage_capacity:   {type: Number, default: 100},
         inventory_count:    {type: Number, default: 0},
-        resource_type:      {type: String, default: "ore"} //but types of ore?!
-        //employees: {type: Number, default:1}
+        resource_type:      {type: String, default: "ore"}, //but types of ore?!
+        num_employees:      {type: Number, default:1},
+        max_employees:      {type: Number, default:10}
     }, options);
 
 

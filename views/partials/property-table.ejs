@@ -1,0 +1,20 @@
+<table class="table table-hover table-bordered" id="properties-table">
+    <tr>
+        <th>Name</th>
+        <th>Resource</th>
+        <th>Running Cost</th>
+        <th>Production Rate</th>
+        <th>Inventory</th>
+        <th>Details</th>
+    </tr>
+    <% for(var i=0; i<currentUser.properties.length; i++) {%>
+        <tr>
+            <td><%= currentUser.properties[i].name %></td>
+            <td><%= currentUser.properties[i].resource_type %></td>
+            <td><%= currentUser.properties[i].run_cost %></td>
+            <td><%= currentUser.properties[i].production_rate %></td>
+            <td><%= currentUser.properties[i].inventory_count %>/<%= currentUser.properties[i].storage_capacity %></td>
+            <td><button type="button" class="btn btn-primary property-button" data-toggle="modal" data-target="#exampleModal" data-whatever=<%= currentUser.properties[i]._id %>>Manage</button></td>
+        </tr>
+    <% } %>
+</table>

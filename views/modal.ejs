@@ -1,1 +1,40 @@
-<p><%=property%></p>
+<h1><%= property.name %> (<%= property.resource_type %>)</h1>
+
+<table class="table table-bordered">
+    <tr>
+        <th>Employees</th>
+        <td id="num-employees"><%= property.num_employees %>/<%= property.max_employees %></td>
+        <td rowspan="3">
+            <button type="button" class="btn btn-primary hirefire" data-button='{"id":"<%= property.id %>","cmd":"hire"}'>+ Hire +</button>
+            <button type="button" class="btn btn-primary hirefire" data-button='{"id":"<%= property.id %>","cmd":"fire"}'>- Fire -</button>
+        </td>
+    </tr>
+    <tr>
+        <th>Running Cost</th>
+        <td id="run-cost"><%= property.run_cost %></td>
+    </tr>
+    <tr>
+        <th>Production Rate</th>
+        <td id="production-rate"><%= property.production_rate %></td>
+    </tr>
+    <tr>
+        <th>Inventory</th>
+        <td><%= property.inventory_count %>/<%= property.storage_capacity %></td>
+        <td>set shipping options</td>
+    </tr>
+</table>
+
+<script type="text/javascript">
+    $('.hirefire').click(function(){
+        var data = $.parseJSON($(this).attr('data-button'));
+        var id = data.id
+        var command = data.cmd
+        
+        //make ajax call and update the info
+        $.post("/ajax/" + id + "/" + command, function(data){
+            $('#run-cost').text(data.property.run_cost);
+            $('#production-rate').text(data.property.production_rate);
+            $('#num-employees').text(data.property.num_employees + "/" + data.property.max_employees);
+        });
+    });
+</script>
