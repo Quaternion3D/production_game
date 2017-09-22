@@ -8,7 +8,7 @@ var express                 = require("express"),
     passportLocalMongoose   = require("passport-local-mongoose"),
     expressSession          = require("express-session"),
     seedDB                  = require("./seeds");
-    
+
 var app = express();
 
 //socket.io setup
@@ -16,7 +16,7 @@ var server = require("http").Server(app);
 var io = require("socket.io")(server);
 
 var allRoutes = require("./routes/index");
-    
+
 //seedDB();
 
 app.use(bodyParser.urlencoded({extended: true}));
@@ -46,7 +46,7 @@ app.use(function(req, res, next){
 })
 
 
-app.use(allRoutes); 
+app.use(allRoutes);
 
 
 io.on('connection', function (socket) {
@@ -80,7 +80,7 @@ function update_all_properties(){
                     if(err){
                         console.log(err);
                     } else {
-                        
+
                     }
                 });
             });
@@ -94,6 +94,6 @@ var intervalID = setInterval(update_all_properties,5000)
 
 
 //tell express to listen for requests (start server)
-server.listen(process.env.PORT, process.env.IP, function(){
+server.listen(8080, '127.0.0.1', function(){
     console.log("Server started");
 });

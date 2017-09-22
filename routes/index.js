@@ -4,7 +4,7 @@ var router = express.Router();
 var User                    = require("../models/user"),
     Property                = require("../models/property"),
     MineProperty            = require("../models/mine"),
-    Deal                    = require("../models/deal"),
+    // Deal                    = require("../models/deal"),
     passport                = require("passport");
 
 
@@ -79,7 +79,7 @@ router.get("/dashboard", isLoggedIn, function(req, res){
     //update resource list
     //update production rates
     //if these aren't part of user they must be passed in separately
-    
+
     User.findOne({username: req.user.username}).populate("properties").exec(function(err,user){
         if(err){
             console.log(err);
@@ -92,7 +92,7 @@ router.get("/dashboard", isLoggedIn, function(req, res){
 });
 
 router.get("/buy", isLoggedIn, function(req, res){
-    res.render("partials/buy.ejs"); 
+    res.render("partials/buy.ejs");
 });
 
 router.post("/buy", isLoggedIn, function(req, res){
@@ -101,10 +101,10 @@ router.post("/buy", isLoggedIn, function(req, res){
     if (req.user.funds >= req.body.build_cost){
         MineProperty.create(
             {
-                name:                   req.body.name, 
+                name:                   req.body.name,
                 resource_type:          req.body.resource_type,
-                build_cost:             req.body.build_cost, 
-                run_cost:               req.body.run_cost, 
+                build_cost:             req.body.build_cost,
+                run_cost:               req.body.run_cost,
                 production_rate:        req.body.production_rate,
                 storage_capacity:       req.body.storage_capacity,
                 inventory_count:        req.body.inventory_count,
@@ -163,7 +163,7 @@ router.get("/ajax/:id", isLoggedIn, function(req, res){
             console.log(err);
             //redirect?
         } else {
-            res.render("modal.ejs", {property: property_data}, function(err, html) 
+            res.render("modal.ejs", {property: property_data}, function(err, html)
             {
                 res.send(html);
             });
@@ -200,9 +200,9 @@ router.post("/ajax/:id/:cmd", isLoggedIn, function(req, res){
                     property_data.run_cost = 0;
                 }
             }
-            
+
             console.log("saving");
-            
+
             //when we update, we probably lose some production here (since updatedAt is incremented)
             //but that kinda makes sense because you're in a staff transition period
             //also it's only losing < 5 units
@@ -217,44 +217,44 @@ router.post("/ajax/:id/:cmd", isLoggedIn, function(req, res){
     });
 })
 
-router.get("/ajax/new-deal", isLoggedIn, function(req, res){
-    res.render("partials/new_deal.ejs"); 
-});
-
-router.post("/ajax/new-deal", isLoggedIn, function(req, res){
-    //todo: specify what kind of property to buy
-    //also ask "are you sure?"
-    var new_deal =
-        {
-            user1_id:           req.user._id,
-            user1_name:         req.user.username,
-            resource_type1:     req.body.resource_type1,
-            quantity1:          req.body.quantity1,
-            user2_id:           0,
-            user2_name:         "gov",
-            resource_type2:     req.body.resource_type2,
-            quantity2:          req.body.quantity2,
-            next_shipment:      req.body.next_shipment,
-            num_left:           req.body.num_left,
-            interval:           req.body.interval
-        };
-    
-    Deal.create(new_deal, function(err,deal_data){
-        if(err){
-            console.log(err);
-        } else {
-            req.user.deals.push(deal_data);
-            //also push to user2 if they're a real user
-            req.user.save(function(err, data){
-                if(err){
-                    console.log(err);
-                } else {
-                    res.redirect("/dashboard");
-                }
-            });
-        }
-    });
-})
+// router.get("/ajax/new-deal", isLoggedIn, function(req, res){
+//     res.render("partials/new_deal.ejs");
+// });
+//
+// router.post("/ajax/new-deal", isLoggedIn, function(req, res){
+//     //todo: specify what kind of property to buy
+//     //also ask "are you sure?"
+//     var new_deal =
+//         {
+//             user1_id:           req.user._id,
+//             user1_name:         req.user.username,
+//             resource_type1:     req.body.resource_type1,
+//             quantity1:          req.body.quantity1,
+//             user2_id:           0,
+//             user2_name:         "gov",
+//             resource_type2:     req.body.resource_type2,
+//             quantity2:          req.body.quantity2,
+//             next_shipment:      req.body.next_shipment,
+//             num_left:           req.body.num_left,
+//             interval:           req.body.interval
+//         };
+//
+//     // Deal.create(new_deal, function(err,deal_data){
+//     //     if(err){
+//     //         console.log(err);
+//     //     } else {
+//     //         req.user.deals.push(deal_data);
+//     //         //also push to user2 if they're a real user
+//     //         req.user.save(function(err, data){
+//     //             if(err){
+//     //                 console.log(err);
+//     //             } else {
+//     //                 res.redirect("/dashboard");
+//     //             }
+//     //         });
+//     //     }
+//     // });
+// })
 
 
 
