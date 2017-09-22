@@ -6,6 +6,7 @@ var options = {discriminatorKey: 'type', timestamps: true};
 
 var PropertySchema = new mongoose.Schema(
     {
+        //will we need to know this property's owner?
         name:               {type: String, default:"Property"},
         build_cost:         {type: Number, default:0},
         run_cost:           {type: Number, default:0},

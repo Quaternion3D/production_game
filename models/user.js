@@ -11,6 +11,12 @@ var UserSchema = new mongoose.Schema({
             ref: "Property"
         }  
     ],
+    deals: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Deal"
+        }  
+    ],
 });
 
 UserSchema.plugin(passportLocalMongoose);

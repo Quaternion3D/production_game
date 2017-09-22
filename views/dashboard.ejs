@@ -44,14 +44,14 @@
         </div>
     </div>
         
+        
+    <!--PROPERTIES-->
     <div class="row">
         <h3>
             <span>Properties</span>
             <button type="button" class="btn btn-primary buy-property" data-toggle="modal" data-target="#exampleModal">+</button>
         </h3>
     </div>
-    
-    <!--PROPERTIES TABLE-->
     <table class="table table-hover table-bordered" id="properties-table">
         <tr>
             <th>Name</th>
@@ -72,6 +72,43 @@
             </tr>
         <% } %>
     </table>
+    
+    
+    <!--DEALS-->
+    <div class="row">
+        <h3>
+            <span>Deals</span>
+            <button type="button" class="btn btn-primary new-deal" data-toggle="modal" data-target="#exampleModal">+</button>
+        </h3>
+    </div>
+    <table class="table table-hover table-bordered" id="deals-table">
+        <tr>
+            <!--todo, merged upper heading (you send, you receive)-->
+            <th>Quantity</th>
+            <th>Resource</th>
+            <th></th>
+            <th>Quantity</th>
+            <th>Resource</th>
+            <th>Next Shipment</th>
+            <th># Shipments Left</th>
+            <th>Shipment Interval</th>
+        </tr>
+        <% for(var i=0; i<currentUser.deals.length; i++) {%>
+            <tr>
+                <td><%= currentUser.deals[i].user1_name %></td>
+                <td><%= currentUser.deals[i].resource1_type %></td>
+                <td>~</td>
+                <td><%= currentUser.deals[i].production_rate %></td>
+                <td><%= currentUser.deals[i].user2_name %></td>
+                <td><%= currentUser.deals[i].resource2_type %></td>
+                <td><%= currentUser.deals[i].next_shipment %></td>
+                <td><%= currentUser.deals[i].num_left %></td>
+                <td><%= currentUser.deals[i].interval %></td>
+                <!--<td><button type="button" class="btn btn-primary deal-button" data-toggle="modal" data-target="#exampleModal" data-whatever=<%= currentUser.properties[i]._id %>>Manage</button></td>-->
+            </tr>
+        <% } %>
+    </table>
+    
     
     <!--MODAL-->
     <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
@@ -118,6 +155,9 @@
                 //fill modal with properties to buy
                 modal.find('.modal-title').text('Buy Menu');
                 modal.find('.modal-body').load("/buy");
+            } else if (button.hasClass('new-deal')) {
+                modal.find('.modal-title').text('New Deal');
+                modal.find('.modal-body').load("/new-deal");   
             }
         });
     </script>

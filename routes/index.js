@@ -4,6 +4,7 @@ var router = express.Router();
 var User                    = require("../models/user"),
     Property                = require("../models/property"),
     MineProperty            = require("../models/mine"),
+    Deal                    = require("../models/deal"),
     passport                = require("passport");
 
 
@@ -216,9 +217,44 @@ router.post("/ajax/:id/:cmd", isLoggedIn, function(req, res){
     });
 })
 
-//update function
-//goes through all properties, calculates time difference, and updates their inventory
+router.get("/ajax/new-deal", isLoggedIn, function(req, res){
+    res.render("partials/new_deal.ejs"); 
+});
 
+router.post("/ajax/new-deal", isLoggedIn, function(req, res){
+    //todo: specify what kind of property to buy
+    //also ask "are you sure?"
+    var new_deal =
+        {
+            user1_id:           req.user._id,
+            user1_name:         req.user.username,
+            resource_type1:     req.body.resource_type1,
+            quantity1:          req.body.quantity1,
+            user2_id:           0,
+            user2_name:         "gov",
+            resource_type2:     req.body.resource_type2,
+            quantity2:          req.body.quantity2,
+            next_shipment:      req.body.next_shipment,
+            num_left:           req.body.num_left,
+            interval:           req.body.interval
+        };
+    
+    Deal.create(new_deal, function(err,deal_data){
+        if(err){
+            console.log(err);
+        } else {
+            req.user.deals.push(deal_data);
+            //also push to user2 if they're a real user
+            req.user.save(function(err, data){
+                if(err){
+                    console.log(err);
+                } else {
+                    res.redirect("/dashboard");
+                }
+            });
+        }
+    });
+})
 
 
 
